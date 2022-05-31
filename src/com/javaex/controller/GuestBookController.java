@@ -46,25 +46,25 @@ public class GuestBookController extends HttpServlet {
 			
 			response.sendRedirect("/guestbook2/gbc?action=addList");
 		}else if("deleteForm".equals(action)) {
-			System.out.println("dddddd");
-			
-			  int no = Integer.parseInt(request.getParameter("no"));
-			  GuestBookDao guestBookDao = new GuestBookDao(); 
-			  GuestBookVo guestBookVo = guestBookDao.guestBookList(no);
-			  
-			  request.setAttribute("gListVo", guestBookVo);
-			  
 			  RequestDispatcher rd = request.getRequestDispatcher("/deleteForm.jsp");
 			  rd.forward(request, response);
 		}else if("delete".equals(action)) {
+			
 			int no = Integer.parseInt(request.getParameter("no"));
 			String password = request.getParameter("password");
 			
-			GuestBookDao guestBookDao = new GuestBookDao();
-			GuestBookVo guestBookVo = new GuestBookVo(no, password);
-			int count = guestBookDao.guestBookDelete(guestBookVo);
-			System.out.println(count);
-			response.sendRedirect("/guestbook2/gbc?action=addList");
+			GuestBookDao guestBookDao = new GuestBookDao(); 
+			GuestBookVo guestBookVo = guestBookDao.guestBookList(no);
+			
+			if(guestBookVo.getPassword().equals(password)) {
+				
+				int count = guestBookDao.guestBookDelete(guestBookVo);
+				response.sendRedirect("/guestbook2/gbc?action=addList");
+				System.out.println(count);
+			}else {
+				response.sendRedirect("/guestbook2/gbc?action=addList");
+				System.out.println("패스워드를 잘못입력하셨습니다.");
+			}
 		}
 		
 	}
