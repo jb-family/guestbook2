@@ -98,7 +98,7 @@ public class GuestBookDao {
 		String query= "";
 		query += " delete from guestbook ";
 		query += " where password = ? ";
-		query += " and   no = ? ";
+		query += " and no = ? ";
 			
 		
 		//바인딩

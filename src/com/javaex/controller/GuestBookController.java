@@ -3,7 +3,6 @@ package com.javaex.controller;
 import java.io.IOException;
 import java.util.List;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -12,13 +11,13 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.javaex.dao.GuestBookDao;
 import com.javaex.vo.GuestBookVo;
+import com.javaex.webutil.WebUtil;
 
 
 @WebServlet("/gbc")
 public class GuestBookController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
-	
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
@@ -31,10 +30,14 @@ public class GuestBookController extends HttpServlet {
 			System.out.println(guestList);
 			
 			//request에 데이터 추가
+			
 			request.setAttribute("gList", guestList);
 			
+			WebUtil.forward(request, response, "/WEB-INF/addList.jsp");
+			/*
 			RequestDispatcher rd = request.getRequestDispatcher("/addList.jsp");
 			rd.forward(request, response);
+			*/
 		}else if("add".equals(action)) {
 			String name = request.getParameter("name");
 			String password = request.getParameter("password");
@@ -44,12 +47,16 @@ public class GuestBookController extends HttpServlet {
 			GuestBookDao guestBookDao = new GuestBookDao();
 			guestBookDao.guestBookInsert(guestBookVo);
 			
-			response.sendRedirect("/guestbook2/gbc?action=addList");
+			WebUtil.redirect(request, response, "/guestbook2/gbc?action=addList");
+			//response.sendRedirect("/guestbook2/gbc?action=addList");
 		}else if("deleteForm".equals(action)) {
-			  RequestDispatcher rd = request.getRequestDispatcher("/deleteForm.jsp");
-			  rd.forward(request, response);
-		}else if("delete".equals(action)) {
+			WebUtil.forward(request, response, "/WEB-INF/deleteForm.jsp");
 			
+			/*
+			RequestDispatcher rd = request.getRequestDispatcher("/deleteForm.jsp");
+			rd.forward(request, response);
+			*/
+		}else if("delete".equals(action)) {
 			int no = Integer.parseInt(request.getParameter("no"));
 			String password = request.getParameter("password");
 			
@@ -59,10 +66,13 @@ public class GuestBookController extends HttpServlet {
 			if(guestBookVo.getPassword().equals(password)) {
 				
 				int count = guestBookDao.guestBookDelete(guestBookVo);
-				response.sendRedirect("/guestbook2/gbc?action=addList");
+				
+				WebUtil.redirect(request, response, "/guestbook2/gbc?action=addList");
+				//response.sendRedirect("/guestbook2/gbc?action=addList");
 				System.out.println(count);
 			}else {
-				response.sendRedirect("/guestbook2/gbc?action=addList");
+				WebUtil.redirect(request, response, "/guestbook2/gbc?action=addList");
+				//response.sendRedirect("/guestbook2/gbc?action=addList");
 				System.out.println("패스워드를 잘못입력하셨습니다.");
 			}
 		}
